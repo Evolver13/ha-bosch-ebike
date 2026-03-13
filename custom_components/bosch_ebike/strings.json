@@ -1,0 +1,29 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Bosch eBike Setup",
+        "description": "Enter the Client-ID from your Bosch eBike Portal app registration at portal.bosch-ebike.com/data-act/app",
+        "data": {
+          "client_id": "Client-ID"
+        }
+      },
+      "auth_code": {
+        "title": "Bosch Login",
+        "description": "1. Open this link in your browser: [{authorize_url}]({authorize_url})\n2. Log in with your Bosch SingleKey ID\n3. After login you will be redirected to a URL starting with `ebike-data://callback?code=...`\n4. Copy the value after `code=` and paste it below",
+        "data": {
+          "auth_code": "Authorization Code"
+        }
+      }
+    },
+    "error": {
+      "no_auth_code": "Please enter the authorization code.",
+      "token_error": "Token exchange failed. Please try again."
+    },
+    "abort": {
+      "no_callback": "No callback received from Bosch login.",
+      "no_auth_code": "No authorization code received.",
+      "token_error": "Token exchange failed. Please try again."
+    }
+  }
+}
