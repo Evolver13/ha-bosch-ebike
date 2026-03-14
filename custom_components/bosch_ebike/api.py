@@ -171,6 +171,29 @@ class BoschEBikeAPI:
         _LOGGER.info("Bosch eBike: Imported %d activities total", len(all_activities))
         return all_activities
 
+    async def get_activity_detail(self, activity_id: str) -> dict[str, Any]:
+        """Fetch full activity detail including GPS track points."""
+        data = await self._get(f"{ACTIVITIES_ENDPOINT}/{activity_id}/details")
+        return data
+
+    async def get_all_activity_details(
+        self, activity_ids: list[str], progress_callback: Any = None
+    ) -> list[dict[str, Any]]:
+        """Fetch full details for all activities (including GPS)."""
+        details: list[dict[str, Any]] = []
+        total = len(activity_ids)
+        for idx, aid in enumerate(activity_ids):
+            try:
+                detail = await self.get_activity_detail(aid)
+                details.append(detail)
+                _LOGGER.debug("Bosch eBike: Fetched detail %d/%d: %s", idx + 1, total, aid)
+                if progress_callback:
+                    progress_callback(idx + 1, total)
+            except Exception as err:
+                _LOGGER.warning("Bosch eBike: Failed to fetch activity %s: %s", aid, err)
+        _LOGGER.info("Bosch eBike: Fetched %d/%d activity details", len(details), total)
+        return details
+
 
 class AuthError(Exception):
     """Authentication error."""
