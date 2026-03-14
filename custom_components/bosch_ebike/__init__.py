@@ -8,6 +8,7 @@ import os
 import voluptuous as vol
 
 from homeassistant.components import websocket_api
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
@@ -31,11 +32,13 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     # Register static path for the Lovelace card
     card_dir = os.path.join(os.path.dirname(__file__), "www")
     if os.path.isdir(card_dir):
-        hass.http.register_static_path(
-            "/bosch_ebike/bosch-ebike-map-card.js",
-            os.path.join(card_dir, "bosch-ebike-map-card.js"),
-            cache_headers=False,
-        )
+        await hass.http.async_register_static_paths([
+            StaticPathConfig(
+                "/bosch_ebike/bosch-ebike-map-card.js",
+                os.path.join(card_dir, "bosch-ebike-map-card.js"),
+                cache_headers=False,
+            )
+        ])
 
     return True
 
