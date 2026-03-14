@@ -106,20 +106,38 @@ Die Integration wird nun deine Bike-Daten abrufen und Sensor-Entities erstellen.
 
 Die Integration enthält eine interaktive Lovelace-Karte zur Anzeige deiner GPS-Tracks.
 
-1. Gehe zu **Einstellungen → Dashboards → Ressourcen → Hinzufügen**
-2. URL: `/bosch_ebike/bosch-ebike-map-card.js`
-3. Typ: **JavaScript-Modul**
-4. Füge die Karte zu deinem Dashboard hinzu:
+**Schritt A: Ressource registrieren**
+
+1. Gehe zu **Einstellungen → Dashboards**
+2. Klicke oben rechts auf das **⋮ Drei-Punkte-Menü** → **Ressourcen**
+3. Klicke auf **+ Ressource hinzufügen** (unten rechts)
+4. Gib folgende Daten ein:
+   - **URL:** `/bosch_ebike/bosch-ebike-map-card.js`
+   - **Ressourcentyp:** JavaScript-Modul
+5. Klicke auf **Erstellen**
+
+**Schritt B: Karte zum Dashboard hinzufügen**
+
+1. Öffne dein gewünschtes Dashboard
+2. Klicke oben rechts auf den **Stift ✏️** (Bearbeiten-Modus)
+3. Klicke auf **+ Karte hinzufügen**
+4. Scrolle ganz nach unten und wähle **Manuell** (YAML-Eingabe)
+5. Füge folgenden Code ein:
    ```yaml
    type: custom:bosch-ebike-map-card
-   height: 500
+   height: 400
    ```
+6. Klicke auf **Speichern**
 
-Die Karte zeigt:
+> **Tipp:** Die Höhe (height) kannst du anpassen (200–1000 Pixel). Empfehlung: 400 für Smartphones, 500 für Desktops.
+
+**Die Karte zeigt:**
 - GPS-Track mit geschwindigkeitsabhängiger Farbcodierung (blau → grün → gelb → rot)
-- Start-/Endpunkt-Marker
-- Fahrtinformationen (Distanz, Dauer, Speed, Höhenmeter, Kalorien)
-- Date-Picker und Prev/Next-Buttons zum Durchblättern aller Fahrten
+- Start-Marker (grün) und Ziel-Marker (rot)
+- Fahrtinformationen (Distanz, Dauer, Ø/Max Speed, Höhenmeter, Kalorien)
+- **◀ Prev / Next ▶** Buttons und **Date-Picker** zum Durchblättern aller Fahrten
+
+> **Hinweis:** Wenn die Karte nach einem Update nicht korrekt angezeigt wird, leere den Browser-Cache mit `Ctrl+Shift+R` (Hard Reload).
 
 #### HACS-Installation (Alternative)
 
@@ -300,20 +318,38 @@ The integration will now fetch your bike data and create sensor entities.
 
 The integration includes an interactive Lovelace card for displaying your GPS tracks.
 
-1. Go to **Settings → Dashboards → Resources → Add**
-2. URL: `/bosch_ebike/bosch-ebike-map-card.js`
-3. Type: **JavaScript Module**
-4. Add the card to your dashboard:
+**Step A: Register the Resource**
+
+1. Go to **Settings → Dashboards**
+2. Click the **⋮ three-dot menu** in the top right → **Resources**
+3. Click **+ Add Resource** (bottom right)
+4. Enter the following:
+   - **URL:** `/bosch_ebike/bosch-ebike-map-card.js`
+   - **Resource Type:** JavaScript Module
+5. Click **Create**
+
+**Step B: Add the Card to Your Dashboard**
+
+1. Open the dashboard where you want the map
+2. Click the **pencil ✏️** icon (top right) to enter edit mode
+3. Click **+ Add Card**
+4. Scroll to the bottom and select **Manual** (YAML editor)
+5. Paste the following code:
    ```yaml
    type: custom:bosch-ebike-map-card
-   height: 500
+   height: 400
    ```
+6. Click **Save**
 
-The card shows:
+> **Tip:** You can adjust the height (200–1000 pixels). Recommendation: 400 for mobile, 500 for desktop.
+
+**The card shows:**
 - GPS track with speed-based color coding (blue → green → yellow → red)
-- Start/end point markers
-- Ride information (distance, duration, speed, elevation, calories)
-- Date picker and prev/next buttons for browsing all rides
+- Start marker (green) and end marker (red)
+- Ride information (distance, duration, avg/max speed, elevation, calories)
+- **◀ Prev / Next ▶** buttons and **date picker** for browsing all rides
+
+> **Note:** If the card doesn't display correctly after an update, clear your browser cache with `Ctrl+Shift+R` (hard reload).
 
 #### HACS Installation (Alternative)
 
