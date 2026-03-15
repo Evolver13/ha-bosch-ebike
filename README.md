@@ -68,17 +68,14 @@ Dies ist der wichtigste Schritt. Du musst eine "App" im Bosch-Portal anlegen, um
 
 > **Hinweis:** Die App muss von Bosch genehmigt werden. Das kann einige Stunden bis wenige Tage dauern. Du erhältst eine E-Mail, sobald die App freigeschaltet ist. Erst danach funktionieren die nächsten Schritte (Datenfreigabe und Token-Austausch).
 
-#### 4. Datenfreigabe im Flow Portal aktivieren
+#### 4. Datenfreigabe aktivieren
 
 Ohne Datenfreigabe liefert die API ein leeres Ergebnis!
 
-1. Gehe zu [portal.bosch-ebike.com/data-act](https://portal.bosch-ebike.com/data-act)
-2. Suche deine gerade erstellte App (z. B. "Home Assistant")
-3. Klicke auf **"Daten freigeben"** (oder "Share data")
-4. Wähle aus, welche Daten du freigeben möchtest:
-   - **Bike-Profil** (Kilometerstand, Motorstunden, Batterie etc.)
-   - **Aktivitäten** (Fahrtdaten, Geschwindigkeit, Trittfrequenz etc.)
-5. Bestätige die Freigabe
+1. Gehe zu **[flow.bosch-ebike.com](https://flow.bosch-ebike.com)**
+2. Melde dich mit deiner **SingleKey ID** an
+3. Wähle oben im Menü **"Data Act"** aus
+4. Suche den Eintrag **"EBike Data"** und **aktiviere** ihn
 
 > **Hinweis:** Wenn du die Datenfreigabe nicht aktivierst, wird die Integration zwar ohne Fehler starten, aber **keine Entities anzeigen** (0 Bikes, keine Aktivitäten).
 
@@ -280,17 +277,14 @@ This is the most important step. You need to create an "App" in the Bosch portal
 
 > **Note:** The app needs to be approved by Bosch. This can take a few hours to a couple of days. You will receive an email once the app is approved. The following steps (data sharing and token exchange) will only work after approval.
 
-#### 4. Enable Data Sharing in the Flow Portal
+#### 4. Enable Data Sharing
 
 Without data sharing enabled, the API will return empty results!
 
-1. Go to [portal.bosch-ebike.com/data-act](https://portal.bosch-ebike.com/data-act)
-2. Find your newly created app (e.g., "Home Assistant")
-3. Click **"Share data"**
-4. Select which data you want to share:
-   - **Bike Profile** (odometer, motor hours, battery, etc.)
-   - **Activities** (ride data, speed, cadence, etc.)
-5. Confirm the sharing
+1. Go to **[flow.bosch-ebike.com](https://flow.bosch-ebike.com)**
+2. Sign in with your **SingleKey ID**
+3. Select **"Data Act"** from the top menu
+4. Find the entry **"EBike Data"** and **activate** it
 
 > **Note:** If you don't activate data sharing, the integration will start without errors but will show **no entities** (0 bikes, no activities).
 
