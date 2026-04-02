@@ -239,6 +239,15 @@ ACTIVITY_SENSORS: tuple[BoschBikeSensorDescription, ...] = (
         is_activity=True,
     ),
     BoschBikeSensorDescription(
+        key="last_ride_start_time",
+        translation_key="last_ride_start_time",
+        name="Last Ride Start Time",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        icon="mdi:calendar-clock",
+        value_fn=lambda d: _safe_get(d, "startTime"),
+        is_activity=True,
+    ),
+    BoschBikeSensorDescription(
         key="last_ride_end_time",
         translation_key="last_ride_end_time",
         name="Last Ride End Time",
