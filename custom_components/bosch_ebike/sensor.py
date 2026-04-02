@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Any
 
 from homeassistant.components.sensor import (
@@ -41,6 +42,19 @@ class BoschBikeSensorDescription(SensorEntityDescription):
     value_fn: Callable[[dict], Any]
     is_activity: bool = False
     is_aggregate: bool = False
+
+
+def _parse_timestamp(value: str | None) -> datetime | None:
+    """Parse an ISO 8601 timestamp string to a datetime object."""
+    if not value or not isinstance(value, str):
+        return None
+    try:
+        dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt
+    except (ValueError, TypeError):
+        return None
 
 
 def _format_assist_modes(data: dict) -> str | None:
@@ -180,7 +194,7 @@ ACTIVITY_SENSORS: tuple[BoschBikeSensorDescription, ...] = (
         name="Last Ride Date",
         device_class=SensorDeviceClass.TIMESTAMP,
         icon="mdi:calendar",
-        value_fn=lambda d: _safe_get(d, "startTime"),
+        value_fn=lambda d: _parse_timestamp(_safe_get(d, "startTime")),
         is_activity=True,
     ),
     BoschBikeSensorDescription(
@@ -244,7 +258,7 @@ ACTIVITY_SENSORS: tuple[BoschBikeSensorDescription, ...] = (
         name="Last Ride Start Time",
         device_class=SensorDeviceClass.TIMESTAMP,
         icon="mdi:calendar-clock",
-        value_fn=lambda d: _safe_get(d, "startTime"),
+        value_fn=lambda d: _parse_timestamp(_safe_get(d, "startTime")),
         is_activity=True,
     ),
     BoschBikeSensorDescription(
@@ -253,7 +267,7 @@ ACTIVITY_SENSORS: tuple[BoschBikeSensorDescription, ...] = (
         name="Last Ride End Time",
         device_class=SensorDeviceClass.TIMESTAMP,
         icon="mdi:calendar-clock",
-        value_fn=lambda d: _safe_get(d, "endTime"),
+        value_fn=lambda d: _parse_timestamp(_safe_get(d, "endTime")),
         is_activity=True,
     ),
 )

@@ -8,6 +8,7 @@ import os
 from typing import Any
 
 from homeassistant.components.button import ButtonEntity
+from homeassistant.components.persistent_notification import async_create as pn_async_create
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -212,7 +213,7 @@ class BoschGPSImportButton(ButtonEntity):
             )
 
             # Create a persistent notification
-            self.hass.components.persistent_notification.async_create(
+            pn_async_create(self.hass,
                 f"GPS import complete!\n\n"
                 f"- **Imported:** {imported} tracks\n"
                 f"- **Skipped** (already exists): {skipped}\n"
@@ -284,7 +285,7 @@ class BoschGPSImportSingleButton(ButtonEntity):
                 await self.hass.async_add_executor_job(_write_file, gpx_path, gpx_content)
                 _LOGGER.info("Bosch eBike: Exported GPX for '%s'", ride_title)
 
-                self.hass.components.persistent_notification.async_create(
+                pn_async_create(self.hass,
                     f"GPS track for **{ride_title}** exported to `{gpx_path}`",
                     title="Bosch eBike GPS Export",
                     notification_id="bosch_ebike_gps_single",
@@ -300,7 +301,7 @@ class BoschGPSImportSingleButton(ButtonEntity):
                     "Raw data saved to %s for inspection.",
                     json_path,
                 )
-                self.hass.components.persistent_notification.async_create(
+                pn_async_create(self.hass,
                     f"No GPS track found in activity detail.\n\n"
                     f"Raw JSON saved to `{json_path}` for inspection.",
                     title="Bosch eBike GPS Export",
