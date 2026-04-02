@@ -30,27 +30,20 @@ Diese Custom Integration verbindet dein **Bosch eBike Smart System** mit Home As
 
 1. Ein eBike mit **Bosch Smart System** (z. B. Performance Line CX, SX, etc.)
 2. Ein **Bosch SingleKey ID** Account ([singlekey-id.com](https://singlekey-id.com))
-3. Zugang zum **Bosch eBike Flow Portal** ([flow.bosch-ebike.com](flow.bosch-ebike.com))
+3. Zugang zum **Bosch eBike Flow Portal** ([portal.bosch-ebike.com](https://portal.bosch-ebike.com))
 
 ---
 
 ### Schritt-für-Schritt-Anleitung
 
-#### 1. Bosch SingleKey ID erstellen (falls noch nicht vorhanden)
+#### Voraussetzungen
 
-1. Gehe zu [singlekey-id.com](https://singlekey-id.com)
-2. Klicke auf **Registrieren**
-3. Erstelle deinen Account mit deiner E-Mail-Adresse
-4. Bestätige deine E-Mail-Adresse
+1. Ein **Bosch SingleKey ID** Account — falls noch nicht vorhanden, erstelle einen unter [singlekey-id.com](https://singlekey-id.com)
+2. Dein eBike muss mit der **Bosch eBike Flow App** ([iOS](https://apps.apple.com/app/bosch-ebike-flow/id1504451498) / [Android](https://play.google.com/store/apps/details?id=com.bosch.ebike)) verknüpft sein
 
-#### 2. eBike mit dem Flow Portal verknüpfen
+---
 
-1. Installiere die **Bosch eBike Flow App** auf deinem Smartphone ([iOS](https://apps.apple.com/app/bosch-ebike-flow/id1504451498) / [Android](https://play.google.com/store/apps/details?id=com.bosch.ebike))
-2. Melde dich mit deiner SingleKey ID an
-3. Koppele dein eBike über Bluetooth mit der App
-4. Dein Bike erscheint nun im Flow Portal unter [flow.bosch-ebike.com](https://flow.bosch-ebike.com)
-
-#### 3. App im Bosch Data Act Portal registrieren
+#### Schritt 1: App im Bosch Data Act Portal registrieren (zuerst machen!)
 
 Dies ist der wichtigste Schritt. Du musst eine "App" im Bosch-Portal anlegen, um eine **Client-ID** zu erhalten.
 
@@ -64,11 +57,44 @@ Dies ist der wichtigste Schritt. Du musst eine "App" im Bosch-Portal anlegen, um
 
    > **Wichtig:** Die Login URL muss der Bosch OAuth-Endpunkt sein (siehe oben). Die Redirect-URI muss **exakt** `http://localhost:8888/callback` lauten.
 
-5. Nach dem Erstellen erhältst du eine **Client-ID** (im Format `euda-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`). Kopiere diese — du brauchst sie gleich.
+5. Nach dem Erstellen erhältst du eine **Client-ID** (im Format `euda-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`).
 
-> **Hinweis:** Die App muss von Bosch genehmigt werden. Das kann einige Stunden bis wenige Tage dauern. Du erhältst eine E-Mail, sobald die App freigeschaltet ist. Erst danach funktionieren die nächsten Schritte (Datenfreigabe und Token-Austausch).
+> **Hinweis:** Die App muss von Bosch genehmigt werden. Das kann einige Stunden bis wenige Tage dauern. Du erhältst eine E-Mail, sobald die App freigeschaltet ist. Erst danach funktionieren die nächsten Schritte.
 
-#### 4. Datenfreigabe aktivieren
+#### Schritt 2: Client-ID sichern
+
+Kopiere die gerade erstellte **Client-ID** in ein Text-File oder einen Notizzettel — du brauchst sie später zum Einfügen per Copy & Paste.
+
+---
+
+#### Schritt 3: Integration in Home Assistant einrichten
+
+> **Wichtig:** Am besten solltest du in deinem Browser **noch NICHT bei Bosch angemeldet** sein, bevor du diesen Schritt startest!
+
+1. Kopiere den Ordner `custom_components/bosch_ebike/` in dein Home Assistant `config/custom_components/`-Verzeichnis
+2. Starte Home Assistant neu
+3. Gehe zu **Einstellungen → Geräte & Dienste → Integration hinzufügen**
+4. Suche nach **"Bosch eBike"**
+5. Gib deine **Client-ID** ein (aus Schritt 2)
+6. Es erscheint ein Feld für den **Autorisierungscode**. Im Home Assistant Log (Warnung) findest du eine URL:
+   ```
+   Bosch eBike: Open this URL in your browser to log in: https://p9.authz.bosch.com/auth/realms/obc/...
+   ```
+7. Kopiere diese URL und öffne sie **in einem neuen Browser-Tab**
+8. Melde dich mit deiner **SingleKey ID** an
+9. Nach dem Login wirst du zu `http://localhost:8888/callback?code=XXXX...` weitergeleitet
+   - Dein Browser wird "Seite nicht erreichbar" anzeigen — **das ist normal!**
+   - Kopiere den Wert nach `code=` aus der Adressleiste (alles bis zum `&` oder bis zum Ende der URL)
+   - ⏱️ **Wichtig: Dies ist zeitkritisch!** Der Code ist nur ca. 45–60 Sekunden gültig — kopiere und füge ihn schnell ein!
+10. Füge den Code in Home Assistant ein und klicke **Absenden** — ebenfalls innerhalb von 45–60 Sekunden!
+
+#### Schritt 4: Ergebnis prüfen
+
+Die Integration sollte jetzt eingerichtet sein — aber **noch ohne Entities!** Das ist normal. Weiter mit Schritt 5.
+
+---
+
+#### Schritt 5: Datenfreigabe aktivieren
 
 Ohne Datenfreigabe liefert die API ein leeres Ergebnis!
 
@@ -77,27 +103,17 @@ Ohne Datenfreigabe liefert die API ein leeres Ergebnis!
 3. Wähle oben im Menü **"Data Act"** aus
 4. Suche den Eintrag **"Home Assistant"** und **aktiviere** ihn
 
-> **Hinweis:** Wenn du die Datenfreigabe nicht aktivierst, wird die Integration zwar ohne Fehler starten, aber **keine Entities anzeigen** (0 Bikes, keine Aktivitäten).
+Jetzt solltest du auf der passenden Bosch-API Seite die Option sehen, die Client-ID zu aktivieren!
 
-#### 5. Integration in Home Assistant einrichten
+#### Schritt 6: Integration neu laden
 
-1. Kopiere den Ordner `custom_components/bosch_ebike/` in dein Home Assistant `config/custom_components/`-Verzeichnis
-2. Starte Home Assistant neu
-3. Gehe zu **Einstellungen → Geräte & Dienste → Integration hinzufügen**
-4. Suche nach **"Bosch eBike"**
-5. Gib deine **Client-ID** ein (aus Schritt 3)
-6. Es erscheint ein Feld für den **Autorisierungscode**. Im Home Assistant Log (Warnung) findest du eine URL:
-   ```
-   Bosch eBike: Open this URL in your browser to log in: https://p9.authz.bosch.com/auth/realms/obc/...
-   ```
-7. Öffne diese URL in deinem Browser
-8. Melde dich mit deiner **SingleKey ID** an
-9. Nach dem Login wirst du zu `http://localhost:8888/callback?code=XXXX...` weitergeleitet
-   - Dein Browser wird "Seite nicht erreichbar" anzeigen — **das ist normal!**
-   - Kopiere den Wert nach `code=` aus der Adressleiste (alles bis zum `&` oder bis zum Ende der URL)
-10. Füge den Code in Home Assistant ein und klicke **Absenden**
+Nachdem du die Client-ID im Flow Portal aktiviert hast:
 
-Die Integration wird nun deine Bike-Daten abrufen und Sensor-Entities erstellen.
+1. Gehe zurück zu **Home Assistant → Einstellungen → Geräte & Dienste**
+2. Suche die **Bosch eBike** Integration
+3. Klicke auf **⋮ (drei Punkte)** → **Neu laden**
+
+Die Integration sollte sich nun mit **allen verfügbaren Entities** aktualisieren (Bike-Daten, Batterie, letzte Fahrt, Gesamtstatistiken).
 
 #### 6. Kartenansicht einrichten (optional)
 
@@ -239,27 +255,20 @@ This custom integration connects your **Bosch eBike Smart System** to Home Assis
 
 1. An eBike with **Bosch Smart System** (e.g., Performance Line CX, SX, etc.)
 2. A **Bosch SingleKey ID** account ([singlekey-id.com](https://singlekey-id.com))
-3. Access to the **Bosch eBike Flow Portal** ([flow.bosch-ebike.com](https://flow.bosch-ebike.com))
+3. Access to the **Bosch eBike Flow Portal** ([portal.bosch-ebike.com](https://portal.bosch-ebike.com))
 
 ---
 
 ### Step-by-Step Setup Guide
 
-#### 1. Create a Bosch SingleKey ID (if you don't have one)
+#### Prerequisites
 
-1. Go to [singlekey-id.com](https://singlekey-id.com)
-2. Click **Register**
-3. Create your account with your email address
-4. Confirm your email address
+1. A **Bosch SingleKey ID** account — if you don't have one, create it at [singlekey-id.com](https://singlekey-id.com)
+2. Your eBike must be linked to the **Bosch eBike Flow App** ([iOS](https://apps.apple.com/app/bosch-ebike-flow/id1504451498) / [Android](https://play.google.com/store/apps/details?id=com.bosch.ebike))
 
-#### 2. Link your eBike to the Flow Portal
+---
 
-1. Install the **Bosch eBike Flow App** on your smartphone ([iOS](https://apps.apple.com/app/bosch-ebike-flow/id1504451498) / [Android](https://play.google.com/store/apps/details?id=com.bosch.ebike))
-2. Sign in with your SingleKey ID
-3. Pair your eBike via Bluetooth with the app
-4. Your bike will now appear in the Flow Portal at [flow.bosch-ebike.com](https://flow.bosch-ebike.com)
-
-#### 3. Register an App in the Bosch Data Act Portal
+#### Step 1: Register an App in the Bosch Data Act Portal (do this first!)
 
 This is the most important step. You need to create an "App" in the Bosch portal to obtain a **Client-ID**.
 
@@ -273,11 +282,44 @@ This is the most important step. You need to create an "App" in the Bosch portal
 
    > **Important:** The Login URL must be the Bosch OAuth endpoint shown above. The redirect URI must be **exactly** `http://localhost:8888/callback`.
 
-5. After creating the app, you will receive a **Client-ID** (format: `euda-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`). Copy it — you'll need it shortly.
+5. After creating the app, you will receive a **Client-ID** (format: `euda-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`).
 
-> **Note:** The app needs to be approved by Bosch. This can take a few hours to a couple of days. You will receive an email once the app is approved. The following steps (data sharing and token exchange) will only work after approval.
+> **Note:** The app needs to be approved by Bosch. This can take a few hours to a couple of days. You will receive an email once the app is approved. The following steps will only work after approval.
 
-#### 4. Enable Data Sharing
+#### Step 2: Save your Client-ID
+
+Copy the **Client-ID** you just created into a text file or note — you will need it later for copy & paste.
+
+---
+
+#### Step 3: Set Up the Integration in Home Assistant
+
+> **Important:** It's best if you are **NOT already logged into Bosch** in your browser before starting this step!
+
+1. Copy the `custom_components/bosch_ebike/` folder into your Home Assistant `config/custom_components/` directory
+2. Restart Home Assistant
+3. Go to **Settings → Devices & Services → Add Integration**
+4. Search for **"Bosch eBike"**
+5. Enter your **Client-ID** (from step 2)
+6. A field for the **Authorization Code** will appear. In the Home Assistant log (warning level), you'll find a URL:
+   ```
+   Bosch eBike: Open this URL in your browser to log in: https://p9.authz.bosch.com/auth/realms/obc/...
+   ```
+7. Copy this URL and open it **in a new browser tab**
+8. Sign in with your **SingleKey ID**
+9. After login, you'll be redirected to `http://localhost:8888/callback?code=XXXX...`
+   - Your browser will show "This site can't be reached" — **this is expected!**
+   - Copy the value after `code=` from the address bar (everything up to the `&` or the end of the URL)
+   - ⏱️ **Important: This is time-critical!** The code is only valid for about 45–60 seconds — copy and paste it quickly!
+10. Paste the code into Home Assistant and click **Submit** — also within 45–60 seconds!
+
+#### Step 4: Check the result
+
+The integration should now be set up — but **still without entities!** This is normal. Continue with step 5.
+
+---
+
+#### Step 5: Enable Data Sharing
 
 Without data sharing enabled, the API will return empty results!
 
@@ -286,27 +328,17 @@ Without data sharing enabled, the API will return empty results!
 3. Select **"Data Act"** from the top menu
 4. Find the entry **"Home Assistant"** and **activate** it
 
-> **Note:** If you don't activate data sharing, the integration will start without errors but will show **no entities** (0 bikes, no activities).
+You should now see the option to activate the Client-ID on the Bosch API page!
 
-#### 5. Set Up the Integration in Home Assistant
+#### Step 6: Reload the Integration
 
-1. Copy the `custom_components/bosch_ebike/` folder into your Home Assistant `config/custom_components/` directory
-2. Restart Home Assistant
-3. Go to **Settings → Devices & Services → Add Integration**
-4. Search for **"Bosch eBike"**
-5. Enter your **Client-ID** (from step 3)
-6. A field for the **Authorization Code** will appear. In the Home Assistant log (warning level), you'll find a URL:
-   ```
-   Bosch eBike: Open this URL in your browser to log in: https://p9.authz.bosch.com/auth/realms/obc/...
-   ```
-7. Open this URL in your browser
-8. Sign in with your **SingleKey ID**
-9. After login, you'll be redirected to `http://localhost:8888/callback?code=XXXX...`
-   - Your browser will show "This site can't be reached" — **this is expected!**
-   - Copy the value after `code=` from the address bar (everything up to the `&` or the end of the URL)
-10. Paste the code into Home Assistant and click **Submit**
+After activating the Client-ID in the Flow Portal:
 
-The integration will now fetch your bike data and create sensor entities.
+1. Go back to **Home Assistant → Settings → Devices & Services**
+2. Find the **Bosch eBike** integration
+3. Click **⋮ (three dots)** → **Reload**
+
+The integration should now update with **all available entities** (bike data, battery, last ride, aggregate statistics).
 
 #### 6. Set Up the Map Card (optional)
 
