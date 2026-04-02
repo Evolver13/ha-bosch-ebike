@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any
 
+import logging
+
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -22,6 +24,8 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import BoschEBikeCoordinator
+
+_LOGGER = logging.getLogger(__name__)
 
 
 def _safe_get(data: dict, *keys: str, default: Any = None) -> Any:
@@ -44,16 +48,29 @@ class BoschBikeSensorDescription(SensorEntityDescription):
     is_aggregate: bool = False
 
 
-def _parse_timestamp(value: str | None) -> datetime | None:
-    """Parse an ISO 8601 timestamp string to a datetime object."""
-    if not value or not isinstance(value, str):
+def _parse_timestamp(value: Any) -> datetime | None:
+    """Parse an ISO 8601 timestamp string to a timezone-aware datetime object.
+
+    HA requires TIMESTAMP sensors to return timezone-aware datetime objects.
+    Bosch API returns strings like "2026-03-07T13:26:44Z" or "2026-03-07T13:26:44.000Z".
+    """
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value
+    if not isinstance(value, str) or not value.strip():
+        _LOGGER.debug("Bosch eBike: _parse_timestamp got non-string: %s (%s)", value, type(value))
         return None
     try:
+        # Python 3.11+ handles "Z" natively in fromisoformat
         dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
         return dt
-    except (ValueError, TypeError):
+    except (ValueError, TypeError) as err:
+        _LOGGER.warning("Bosch eBike: Failed to parse timestamp '%s': %s", value, err)
         return None
 
 
@@ -510,7 +527,17 @@ class BoschEBikeSensor(CoordinatorEntity[BoschEBikeCoordinator], SensorEntity):
             activity = self.coordinator.data.get("latest_activity")
             if not activity:
                 return None
-            return self.entity_description.value_fn(activity)
+            value = self.entity_description.value_fn(activity)
+            # Debug logging for timestamp sensors
+            if self.entity_description.device_class == SensorDeviceClass.TIMESTAMP:
+                _LOGGER.debug(
+                    "Bosch eBike: Sensor '%s' raw activity keys=%s, value=%s (%s)",
+                    self.entity_description.key,
+                    list(activity.keys()) if isinstance(activity, dict) else "N/A",
+                    value,
+                    type(value).__name__,
+                )
+            return value
 
         # Find this bike in coordinator data
         for bike in self.coordinator.data.get("bikes", []):
