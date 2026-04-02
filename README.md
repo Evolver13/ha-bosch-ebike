@@ -123,7 +123,7 @@ Die Integration enthält eine interaktive Lovelace-Karte zur Anzeige deiner GPS-
 2. Klicke oben rechts auf das **⋮ Drei-Punkte-Menü** → **Ressourcen**
 3. Klicke auf **+ Ressource hinzufügen** (unten rechts)
 4. Gib folgende Daten ein:
-   - **URL:** `/ha_bosch_ebike/bosch-ebike-map-card.js`
+   - **URL:** `/bosch_ebike/bosch-ebike-map-card.js`
    - **Ressourcentyp:** JavaScript-Modul
 5. Klicke auf **Erstellen**
 
@@ -224,6 +224,11 @@ Die Integration enthält eine interaktive Lovelace-Karte zur Anzeige deiner GPS-
 |--------|--------------|
 | Import All GPS Data | Exportiert GPS-Tracks aller Fahrten als GPX-Dateien |
 | Import Latest GPS Data | Exportiert den GPS-Track der letzten Fahrt als GPX |
+
+> **Speicherort:** Die exportierten GPX-Dateien werden lokal im Home-Assistant-Config-Verzeichnis gespeichert unter:
+> ```
+> /config/bosch_ebike_gps/
+> ```
 
 ---
 
@@ -446,6 +451,11 @@ The integration includes an interactive Lovelace card for displaying your GPS tr
 |--------|-------------|
 | Import All GPS Data | Exports GPS tracks of all rides as GPX files |
 | Import Latest GPS Data | Exports the GPS track of the latest ride as GPX |
+
+> **Storage location:** The exported GPX files are stored locally in the Home Assistant config directory at:
+> ```
+> /config/bosch_ebike_gps/
+> ```
 
 ---
 
